@@ -9,9 +9,9 @@
     "version": "6.3.0",
     "commit": "c17498042fc79734cec390e6314cbe810e95bf4c"
   },
-  "scripts": {  
+  "scripts": {
     "test": "jest --coverage",
-    "start": "nodemon"   
+    "start": "nodemon"
   },
   "devDependencies": {
     "jest": "^29.6.1"
