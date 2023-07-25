@@ -10,7 +10,7 @@
   },
   "globals": {
     "path": "readonly", // não seja reatribuída ou modificada 
-    "ls": "readonly",
+    "fs": "readonly",
     "chalc": "readonly"
   },
   "extends": [

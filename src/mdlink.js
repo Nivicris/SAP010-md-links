@@ -37,35 +37,106 @@ function readDirFile(pathFile) {
   return fs.promises.stat(pathFile)
     .then(statsObj => {
       if (statsObj.isDirectory()) {
-        return readMDFilesInDirectory (pathFile);
+        return readMDFilesInDirectory(pathFile);
       } else {
-        return readMDFile(pathFile);
+        return readMDFile(pathFile)
+          .then(fileData => {
+            if (!fileData.data.trim()) {
+              return { file: pathFile, data: 'O arquivo está vazio.' };
+            } else {
+              return fileData;
+            }
+          });
       }
     });
 }
 
 function extractLinksFromMarkdown(markdownContent) {
-  const linkRegex = /\[([^\]]+)\]\(([^\)]+)\)/g;
+  const textFile = markdownContent.data;
+  const regexLink = /\[([^\]]+)\]\(([^\)]+)\)/g;
   const links = [];
 
   let match;
-  while ((match = linkRegex.exec(markdownContent))) { //loop enquanto a expressão retornar verdadeiro
+  while ((match = regexLink.exec(textFile))) {
     const linkText = match[1];
     const linkUrl = match[2];
     links.push({ text: linkText, url: linkUrl });
   }
+    return links;
+  };
 
-  return links;
-}
+  function validateFunction(links) {
+    const promises = links.map(function(element) {
+      return fetch(element.url)
+        .then(function(response) {
+          return {
+            ...element,
+            status: response.status,
+            ok: response.ok,
+          };
+        })
+        .catch(function(error) {
+          return {
+            ...element,
+            status: 'Link error',
+            ok: false,
+          };
+        });
+    });
+  
+    return Promise.all(promises);
+  }
 
+  // function mdLinks(pathFile, option) {
+  //   return new Promise((resolve, reject) => {
+  //     readDirFile(pathFile)
+  //       .then(result => {
+  //         const linksPromises = result.map(fileContent => {
+  //           if (!Array.isArray(fileContent)) {
+  //             const linksObj = extractLinksFromMarkdown(fileContent);
+  //             if (!option.validate) {
+  //               return linksObj;
+  //             } else {
+  //               return validateFunction(linksObj);
+  //             }
+  //           } else {
+  //             return Promise.resolve(fileContent);
+  //           }
+  //         });
+  
+  //         Promise.all(linksPromises)
+  //           .then(linksArrays => {
+  //             const allLinks = linksArrays.flat();
+  //             resolve(allLinks);
+  //           })
+  //           .catch(reject);
+  //       })
+  //       .catch(reject);
+  //   });
+  // }
 
-readDirFile(__dirname, 'mslink.js')
+ 
+  readDirFile(__dirname, 'mdlink.js')
   .then(result => {
     console.log('Arquivos Markdown encontrados:', result);
 
-    const links = extractLinksFromMarkdown(result[0].data);
-    console.log('Links encontrados:', links);   
-  })
- 
+    
+    const markdownContent = result[0];
 
- 
+    const links = extractLinksFromMarkdown(markdownContent);
+    if (links.length === 0) {
+      console.log('O arquivo não contém links.');
+    } else {
+      console.log('Links encontrados:', links);
+      validateFunction(links)
+        .then(validatedLinks => {
+          console.log('Links validados:', validatedLinks);
+        })
+        .catch(error => {
+          console.error('Erro ao validar os links:', error);
+        });
+    }
+  })
+  .catch(error => {
+    console.error('Erro ao ler o arquivo ou diretório:', error);
+  });
