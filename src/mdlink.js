@@ -1,6 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 
+
 /* função  lê o conteúdo de um diretório, filtra os arquivos Markdown e retorna uma Promise que, quando resolvida, 
 contém um array de objetos { file, data }, 
 onde file é o caminho absoluto para o arquivo Markdown e data é o conteúdo do arquivo.  */
@@ -19,7 +20,7 @@ function readMDFilesInDirectory(pathDir) {
     });
 }
 
-// função que lê o arquivo
+// // função que lê o arquivo
 function readMDFile(file) {
   const fileMD = path.extname(file) === '.md';
   if (!fileMD) {
@@ -32,7 +33,7 @@ function readMDFile(file) {
     });
 }
 
-// função que passa o caminho do diretório ou arquivo e ela irá ler e processar os arquivos de acordo com a sua estrutura.
+// // função que passa o caminho do diretório ou arquivo e ela irá ler e processar os arquivos de acordo com a sua estrutura.
 function readDirFile(pathFile) {
   return fs.promises.stat(pathFile)
     .then(statsObj => {
@@ -78,7 +79,7 @@ function extractLinksFromMarkdown(markdownContent) {
         .catch(function(error) {
           return {
             ...element,
-            status: 'Link error',
+            status: 404,
             ok: false,
           };
         });
@@ -87,56 +88,31 @@ function extractLinksFromMarkdown(markdownContent) {
     return Promise.all(promises);
   }
 
-  // function mdLinks(pathFile, option) {
-  //   return new Promise((resolve, reject) => {
-  //     readDirFile(pathFile)
-  //       .then(result => {
-  //         const linksPromises = result.map(fileContent => {
-  //           if (!Array.isArray(fileContent)) {
-  //             const linksObj = extractLinksFromMarkdown(fileContent);
-  //             if (!option.validate) {
-  //               return linksObj;
-  //             } else {
-  //               return validateFunction(linksObj);
-  //             }
-  //           } else {
-  //             return Promise.resolve(fileContent);
-  //           }
-  //         });
-  
-  //         Promise.all(linksPromises)
-  //           .then(linksArrays => {
-  //             const allLinks = linksArrays.flat();
-  //             resolve(allLinks);
-  //           })
-  //           .catch(reject);
-  //       })
-  //       .catch(reject);
-  //   });
-  // }
-
- 
-  readDirFile(__dirname, 'mdlink.js')
-  .then(result => {
-    console.log('Arquivos Markdown encontrados:', result);
-
-    
-    const markdownContent = result[0];
-
-    const links = extractLinksFromMarkdown(markdownContent);
-    if (links.length === 0) {
-      console.log('O arquivo não contém links.');
-    } else {
-      console.log('Links encontrados:', links);
-      validateFunction(links)
-        .then(validatedLinks => {
-          console.log('Links validados:', validatedLinks);
-        })
-        .catch(error => {
-          console.error('Erro ao validar os links:', error);
+  function mdLinks(pathFile) {
+       
+    return readDirFile(pathFile)
+      .then(result => {
+        const linksPromises = result.flat().map(fileContent => {
+          const linksObj = extractLinksFromMarkdown(fileContent);
+          return option.validate ? validateFunction(linksObj) : linksObj;
         });
-    }
-  })
-  .catch(error => {
-    console.error('Erro ao ler o arquivo ou diretório:', error);
-  });
+  
+        return Promise.all(linksPromises)
+          .then(linksArrays => {
+            const allLinks = linksArrays.flat();
+            return allLinks;
+          });
+      });
+  }
+
+  const option = { validate: true };
+  
+  mdLinks(__dirname, 'src')
+    .then((result) => {
+      console.log(result); 
+    })
+    .catch((error) => {
+      console.error(error); 
+    });
+
+  
