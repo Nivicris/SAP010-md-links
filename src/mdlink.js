@@ -1,3 +1,4 @@
+// const { fail } = require('assert');
 const fs = require('fs');
 const path = require('path');
 
@@ -52,16 +53,16 @@ function readDirFile(pathFile) {
     });
 }
 
-function extractLinksFromMarkdown(markdownContent) {
-  const textFile = markdownContent.data;
+function extractLinksFromMarkdown(markdownContent, pathFile) {
+  const file = markdownContent.data;
   const regexLink = /\[([^\]]+)\]\(([^\)]+)\)/g;
   const links = [];
 
   let match;
-  while ((match = regexLink.exec(textFile))) {
+  while ((match = regexLink.exec(file))) {
     const linkText = match[1];
     const linkUrl = match[2];
-    links.push({ text: linkText, url: linkUrl });
+    links.push({ text: linkText, url: linkUrl, file: pathFile});
   }
     return links;
   };
@@ -73,14 +74,14 @@ function extractLinksFromMarkdown(markdownContent) {
           return {
             ...element,
             status: response.status,
-            ok: response.ok,
+            ok: 'ok',
           };
         })
         .catch(function(error) {
           return {
             ...element,
             status: 404,
-            ok: false,
+            ok: 'fail',
           };
         });
     });
@@ -88,13 +89,13 @@ function extractLinksFromMarkdown(markdownContent) {
     return Promise.all(promises);
   }
 
-  function mdLinks(pathFile) {
+  function mdLinks(path, options = { validate: true }) {
        
-    return readDirFile(pathFile)
+    return readDirFile(path)
       .then(result => {
         const linksPromises = result.flat().map(fileContent => {
-          const linksObj = extractLinksFromMarkdown(fileContent);
-          return option.validate ? validateFunction(linksObj) : linksObj;
+          const linksObj = extractLinksFromMarkdown(fileContent, fileContent.file);
+          return options.validate ? validateFunction(linksObj) : linksObj;
         });
   
         return Promise.all(linksPromises)
@@ -105,9 +106,8 @@ function extractLinksFromMarkdown(markdownContent) {
       });
   }
 
-  const option = { validate: true };
-  
-  mdLinks(__dirname, 'src')
+   
+  mdLinks('./src', option = { validate: true })
     .then((result) => {
       console.log(result); 
     })
@@ -115,4 +115,5 @@ function extractLinksFromMarkdown(markdownContent) {
       console.error(error); 
     });
 
+    module.exports = {readMDFilesInDirectory}
   
