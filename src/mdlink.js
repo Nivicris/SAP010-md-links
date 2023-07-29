@@ -107,13 +107,13 @@ function extractLinksFromMarkdown(markdownContent, pathFile) {
   }
 
    
-  mdLinks('./src', option = { validate: true })
-    .then((result) => {
-      console.log(result); 
-    })
-    .catch((error) => {
-      console.error(error); 
-    });
+  // mdLinks('./src', option = { validate: true })
+  //   .then((result) => {
+  //     console.log(result); 
+  //   })
+  //   .catch((error) => {
+  //     console.error(error); 
+  //   });
 
-    module.exports = {readMDFilesInDirectory}
+    module.exports = {readMDFilesInDirectory,  readMDFile, readDirFile, extractLinksFromMarkdown}
   
