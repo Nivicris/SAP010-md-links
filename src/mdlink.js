@@ -89,22 +89,23 @@ function extractLinksFromMarkdown(markdownContent, pathFile) {
     return Promise.all(promises);
   }
 
-  function mdLinks(path, options = { validate: true }) {
-       
-    return readDirFile(path)
-      .then(result => {
-        const linksPromises = result.flat().map(fileContent => {
-          const linksObj = extractLinksFromMarkdown(fileContent, fileContent.file);
-          return options.validate ? validateFunction(linksObj) : linksObj;
-        });
-  
-        return Promise.all(linksPromises)
-          .then(linksArrays => {
-            const allLinks = linksArrays.flat();
-            return allLinks;
+    function mdLinks(path, options = { validate: true }) {
+        
+      return readDirFile(path)
+        .then(resolve => {
+          const dataArray = Array.isArray(resolve) ? resolve: [resolve];
+          const linksPromises =dataArray.flatMap(fileContent => {
+            const linksObj = extractLinksFromMarkdown(fileContent, fileContent.file);
+            return options.validate ? validateFunction(linksObj) : linksObj;
           });
-      });
-  }
+    
+          return Promise.all(linksPromises)
+            .then(linksArrays => {
+              const allLinks = linksArrays.flat();
+              return allLinks;
+            });
+        });
+    }
 
    
   // mdLinks('./src', option = { validate: true })
@@ -115,5 +116,5 @@ function extractLinksFromMarkdown(markdownContent, pathFile) {
   //     console.error(error); 
   //   });
 
-    module.exports = {readMDFilesInDirectory,  readMDFile, readDirFile, extractLinksFromMarkdown}
+module.exports = {readMDFilesInDirectory,  readMDFile, readDirFile, extractLinksFromMarkdown, validateFunction,  mdLinks}
   
