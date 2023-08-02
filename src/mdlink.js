@@ -64,12 +64,12 @@ function extractLinksFromMarkdown(markdownContent, pathFile) {
 
 function validateFunction(links) {
   const promises = links.map(function (element) {
-    return fetch(element.url)
+    return fetch(element.href)
       .then(function (response) {
         return {
           ...element,
           status: response.status,
-          ok: "ok",
+          ok: response.ok ? "ok" : "fail",
         };
       })
       .catch(function (error) {

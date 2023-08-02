@@ -77,9 +77,9 @@ describe("Função extractLinksFromMarkdown", () => {
     const result = extractLinksFromMarkdown(markdownContent, pathFile);
 
     expect(result).toEqual([
-      { text: "Google", url: "https://www.google.com/", file: pathFile },
-      { text: "OpenAI", url: "https://openai.com/", file: pathFile },
-      { text: "GitHub", url: "https://github.com/", file: pathFile },
+      { text: "Google", href: "https://www.google.com/", file: pathFile },
+      { text: "OpenAI", href: "https://openai.com/", file: pathFile },
+      { text: "GitHub", href: "https://github.com/", file: pathFile },
     ]);
   });
 
@@ -97,69 +97,69 @@ describe("Função extractLinksFromMarkdown", () => {
   describe("validateFunction", () => {
     test("Deve validar corretamente os links", () => {
       const links = [
-        { text: "Google", url: "http://google.com/", file: "/src/test.md" },
         {
-          text: "Introdução ao Jest - Documentação oficial",
-          url: "https://jestjs.io/docs/pt-BR/getting-started",
-          file: "/src/test.md",
+          text: "Google",
+          href: "http://google.com/",
+          file: "./src/test.md",
         },
         {
-          text: "Códigos de status de respostas HTTP - MDN",
-          url: "https://developer.mozilla.org/pt-BR/docs/Web/HTTP/Status",
-          file: "/src/test.md",
+          text: "OpenAI",
+          href: "https://openai.com/",
+          file: "./src/test.md",
+        },
+        {
+          text: "GitHub",
+          href: "https://github.com/",
+          file: "./src/test.md",
         },
       ];
-
+  
       // Simulando as requisições HTTP usando a biblioteca node-fetch
       // Neste exemplo, consideraremos todos os links como válidos (status 200)
-      const fetchMock = jest.fn().mockResolvedValue({ status: 200 });
-
+      const fetchMock = jest.fn().mockResolvedValue({ status: 200, ok: true });
+  
       // Substituindo a função fetch pela implementação de mock
       global.fetch = fetchMock;
-
+  
       return validateFunction(links).then((result) => {
         expect(result).toEqual([
           {
             text: "Google",
-            url: "http://google.com/",
-            file: "/src/test.md",
+            href: "http://google.com/",
+            file: "./src/test.md",
             status: 200,
             ok: "ok",
           },
           {
-            text: "Introdução ao Jest - Documentação oficial",
-            url: "https://jestjs.io/docs/pt-BR/getting-started",
-            file: "/src/test.md",
+            text: "OpenAI",
+            href: "https://openai.com/",
+            file: "./src/test.md",
             status: 200,
             ok: "ok",
           },
           {
-            text: "Códigos de status de respostas HTTP - MDN",
-            url: "https://developer.mozilla.org/pt-BR/docs/Web/HTTP/Status",
-            file: "/src/test.md",
+            text: "GitHub",
+            href: "https://github.com/",
+            file: "./src/test.md",
             status: 200,
             ok: "ok",
           },
         ]);
-
+  
         // Verificando se a função fetch foi chamada três vezes com os URLs corretos
         expect(fetchMock).toHaveBeenCalledTimes(3);
         expect(fetchMock).toHaveBeenCalledWith("http://google.com/");
-        expect(fetchMock).toHaveBeenCalledWith(
-          "https://jestjs.io/docs/pt-BR/getting-started"
-        );
-        expect(fetchMock).toHaveBeenCalledWith(
-          "https://developer.mozilla.org/pt-BR/docs/Web/HTTP/Status"
-        );
+        expect(fetchMock).toHaveBeenCalledWith("https://openai.com/");
+        expect(fetchMock).toHaveBeenCalledWith("https://github.com/");
       });
-    });
+    });  
 
     test("Deve lidar corretamente com links inválidos", () => {
       // Links para validar (usaremos links fictícios para os fins do teste)
       const links = [
         {
           text: "Sitio oficial de npm (em inglês)",
-          url: "https://www.npmjs.@@@@com/",
+          href: "https://www.npmjs.@@@@com/",
           file: "/src/test.md",
         },
       ];
@@ -174,7 +174,7 @@ describe("Função extractLinksFromMarkdown", () => {
         expect(result).toEqual([
           {
             text: "Sitio oficial de npm (em inglês)",
-            url: "https://www.npmjs.@@@@com/",
+            href: "https://www.npmjs.@@@@com/",
             file: "/src/test.md",
             status: 404,
             ok: "fail",
@@ -198,46 +198,53 @@ describe("mdLinks", () => {
       expect(result).toEqual([
         {
           text: "Introdução ao Jest - Documentação oficial",
-          url: "https://jestjs.io/docs/pt-BR/getting-started",
+          href: "https://jestjs.io/docs/pt-BR/getting-started",
           file: "./src/test.md",
         },
         {
           text: "Sitio oficial de npm (em inglês)",
-          url: "https://www.npmjs.@@@@com/",
+          href: "https://www.npmjs.@@@@com/",
           file: "./src/test.md",
         },
         {
           text: "Códigos de status de respostas HTTP - MDN",
-          url: "https://developer.mozilla.org/pt-BR/docs/Web/HTTP/Status",
+          href: "https://developer.mozilla.org/pt-BR/docs/Web/HTTP/Status",
           file: "./src/test.md",
         },
-        { text: "google", url: "http://google.com/", file: "./src/test.md" }, // Corrigido o caminho para './src/test.md'
+        { text: "google", 
+        href: "http://google.com/", 
+        file: "./src/test.md" }, // Corrigido o caminho para './src/test.md'
       ]);
     });
   });
 
-  // test('Deve retornar todos os links de arquivos Markdown no diretório e validar os links', () => {
-  //   const pathFile = './src/test.md';
-  //   const options = { validate: true };
-  //   const fetchMock = jest.fn((url) => {
-  //     if (url.includes('valid-url')) {
-  //       return Promise.resolve({ status: 200 });
-  //     } else {
-  //       return Promise.reject({ status: 404 });
-  //     }
-  //   });
-
-  //   global.fetch = fetchMock;
-
-  //   return mdLinks(pathFile, options)
-  //       .then((result) => {
-  //         expect (result).toEqual([
-
-  //           { text: 'Introdução ao Jest - Documentação oficial', url: 'https://jestjs.io/docs/pt-BR/getting-started', file: './src/test.md', status: 200, ok: 'ok' },
-  //           { text: 'Sitio oficial de npm (em inglês)', url: 'https://www.npmjs.com/', file: './src/test.md', status: 404, ok: 'fail' },
-  //           { text: 'Códigos de status de respostas HTTP - MDN', url: 'https://developer.mozilla.org/pt-BR/docs/Web/HTTP/Status', file: './src/test.md', status: 200, ok: 'ok' },
-  //           { text: 'google', url: 'http://google.com/', file: './src/test.md', status: 200, ok: 'ok' }
-  //         ]);
-  //       });
-  //     });
-});
+  test('Deve retornar todos os links de arquivos Markdown no diretório e validar os links', () => {   
+    const filePath = './src/test.md';
+    const expectedLinks = [
+      {
+        text: "Google",
+        href: "http://google.com/",
+        file: "./src/test.md",
+        status: 200,
+        ok: "ok",
+      },
+      {
+        text: "OpenAI",
+        href: "https://openai.com/",
+        file: "./src/test.md",
+        status: 404,
+        ok: "fail",
+      },
+      {
+        text: "GitHub",
+        href: "https://github.com/",
+        file: "./src/test.md",
+        status: 200,
+        ok: "ok",
+      },
+    ]
+    return mdLinks(filePath, { validate: true }).then((result) => {
+      expect(result).toEqual(expectedLinks);
+    });
+  })
+}); 
