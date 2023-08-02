@@ -1,12 +1,12 @@
-const { mdLinks } = require("./mdlink.js");
-
+#!/usr/bin/env node
+const { mdLinks } = require("./mdlink");
 
 const args = process.argv.slice(2);
 const filePath = args[0];
 const options = {
   validate: args.includes("--validate"),
   stats: args.includes("--stats"),
-  validadeAndStats: args.includes("--validate") && args.includes("--stats"),
+  validateStats: args.includes("--validate") && args.includes("--stats"), // Correção do nome da variável
 };
 
 function linkStatistics(links) {
@@ -25,30 +25,38 @@ function linkStatistics(links) {
 
 function outputLinks(links) {
   links.forEach((link) => {
-    const { file, href, text, status, statusText } = link;
+    const { file, href, text, status } = link;
     const linkStatus = status === 200 ? `ok ${status}` : `fail ${status}`;
     console.log(`${file} ${href} ${linkStatus} ${text}`);
   });
 }
 
-
 function outputStats(stats) {
   console.log("Total:", stats.total);
-  console.log("Unique:", stats.unique);
-  console.log("Broken:", stats.broken);
+  console.log("Unique:", stats.unique.size); // Exibir o valor numérico de links únicos
+}
+
+function outputStatsBroken(stats) {
+  console.log(`Total: ${stats.total}`);
+  console.log(`Unique: ${stats.unique.size}`); // Exibir o valor numérico de links únicos
+  console.log(`Broken: ${stats.broken}`);
 }
 
 function mdLinksCli(path, options) {
   mdLinks(path, options)
     .then((result) => {
-      if (options.validate) {
+      if (result.length === 0) {
+        console.log("O arquivo não contém links");
+        return;
+      }
+      if (options.validateStats) {
+        const linkStats = linkStatistics(result);
+        outputStatsBroken(linkStats);
+      } else if (options.validate) {
         outputLinks(result);
       } else if (options.stats) {
         const stats = linkStatistics(result);
         outputStats(stats);
-      } else if (options.validateAndStats) {
-        const linkStats = linkStatistics(result);
-        outputStats(linkStats);
       } else {
         outputLinks(result);
       }
@@ -59,3 +67,4 @@ function mdLinksCli(path, options) {
 }
 
 mdLinksCli(filePath, options);
+
