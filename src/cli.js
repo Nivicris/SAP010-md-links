@@ -1,12 +1,12 @@
 #!/usr/bin/env node
 const { mdLinks } = require("./mdlink");
+const chalk = require("chalk");
 
 const args = process.argv.slice(2);
 const filePath = args[0];
 const options = {
   validate: args.includes("--validate"),
   stats: args.includes("--stats"),
-  validateStats: args.includes("--validate") && args.includes("--stats"), // Correção do nome da variável
 };
 
 function linkStatistics(links) {
@@ -23,23 +23,33 @@ function linkStatistics(links) {
   );
 }
 
+
 function outputLinks(links) {
-  links.forEach((link) => {
+  console.log(`${chalk.bold("\n--- Validate ---")}\n`);  
+  links.forEach((link) => {    
     const { file, href, text, status } = link;
     const linkStatus = status === 200 ? `ok ${status}` : `fail ${status}`;
-    console.log(`${file} ${href} ${linkStatus} ${text}`);
+    
+    console.log(`${chalk.cyan("file:")} ${chalk.bold.white(file)}\n`);
+    console.log(`${chalk.cyan("href:")} ${chalk.blueBright(href)}\n`);
+    const styledStatus = linkStatus.includes("ok") ? chalk.green(linkStatus) : chalk.red(linkStatus);
+    console.log(`${chalk.cyan("status:")} ${styledStatus}\n`);
+    console.log(`${chalk.cyan("text:")} ${chalk.yellowBright(text)}\n`);
+    console.log(`**********************************`);
   });
 }
 
 function outputStats(stats) {
-  console.log("Total:", stats.total);
-  console.log("Unique:", stats.unique.size); // Exibir o valor numérico de links únicos
+  console.log(`${chalk.bold("\n--- Stats ---")}\n`);
+  console.log(`${chalk.cyan("Total:")} ${chalk.yellow(stats.total)}`);
+  console.log(`${chalk.cyan("Unique:")} ${chalk.yellow(stats.unique.size)}\n`);
 }
 
 function outputStatsBroken(stats) {
-  console.log(`Total: ${stats.total}`);
-  console.log(`Unique: ${stats.unique.size}`); // Exibir o valor numérico de links únicos
-  console.log(`Broken: ${stats.broken}`);
+  console.log(`${chalk.bold("\n--- Stats e Validate ---")}\n`);
+  console.log(`${chalk.cyan("Total:")} ${chalk.yellow(stats.total)}`);
+  console.log(`${chalk.cyan("Unique:")} ${chalk.yellow(stats.unique.size)}`);
+  console.log(`${chalk.cyan("Broken:")} ${chalk.red(stats.broken)}\n`);
 }
 
 function mdLinksCli(path, options) {
@@ -49,7 +59,7 @@ function mdLinksCli(path, options) {
         console.log("O arquivo não contém links");
         return;
       }
-      if (options.validateStats) {
+      if (options.validate && options.stats) {
         const linkStats = linkStatistics(result);
         outputStatsBroken(linkStats);
       } else if (options.validate) {
@@ -67,4 +77,3 @@ function mdLinksCli(path, options) {
 }
 
 mdLinksCli(filePath, options);
-
