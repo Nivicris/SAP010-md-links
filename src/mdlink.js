@@ -1,4 +1,3 @@
-// const { fail } = require('assert');
 const fs = require("fs");
 const path = require("path");
 
