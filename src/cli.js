@@ -23,17 +23,28 @@ function linkStatistics(links) {
   );
 }
 
-
 function outputLinks(links) {
-  console.log(`${chalk.bold("\n--- Validate ---")}\n`);  
-  links.forEach((link) => {    
+  console.log(`${chalk.bold("\n--- Validate ---")}\n`);
+  links.forEach((link) => {
     const { file, href, text, status } = link;
     const linkStatus = status === 200 ? `ok ${status}` : `fail ${status}`;
-    
+
     console.log(`${chalk.cyan("file:")} ${chalk.bold.white(file)}\n`);
     console.log(`${chalk.cyan("href:")} ${chalk.blueBright(href)}\n`);
-    const styledStatus = linkStatus.includes("ok") ? chalk.green(linkStatus) : chalk.red(linkStatus);
+    const styledStatus = linkStatus.includes("ok")
+      ? chalk.green(linkStatus)
+      : chalk.red(linkStatus);
     console.log(`${chalk.cyan("status:")} ${styledStatus}\n`);
+    console.log(`${chalk.cyan("text:")} ${chalk.yellowBright(text)}\n`);
+    console.log(`**********************************`);
+  });
+}
+
+function outputLinksFalse(links) {
+  links.forEach((link) => {
+    const { file, href, text } = link;
+    console.log(`${chalk.cyan("file:")} ${chalk.bold.white(file)}\n`);
+    console.log(`${chalk.cyan("href:")} ${chalk.blueBright(href)}\n`);
     console.log(`${chalk.cyan("text:")} ${chalk.yellowBright(text)}\n`);
     console.log(`**********************************`);
   });
@@ -68,7 +79,7 @@ function mdLinksCli(path, options) {
         const stats = linkStatistics(result);
         outputStats(stats);
       } else {
-        outputLinks(result);
+        outputLinksFalse(result);
       }
     })
     .catch((error) => {

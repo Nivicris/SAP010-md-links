@@ -1,10 +1,7 @@
 const fs = require("fs");
 const path = require("path");
 
-/* função  lê o conteúdo de um diretório, filtra os arquivos Markdown e retorna uma Promise que, quando resolvida, 
-contém um array de objetos { file, data }, 
-onde file é o caminho absoluto para o arquivo Markdown e data é o conteúdo do arquivo.  */
-
+// função que lê o diretório
 function readMDFilesInDirectory(pathDir) {
   return fs.promises.readdir(pathDir).then((files) => {
     const mdFilesPromises = files
@@ -18,7 +15,7 @@ function readMDFilesInDirectory(pathDir) {
   });
 }
 
-// // função que lê o arquivo
+// função que lê o arquivo
 function readMDFile(file) {
   const fileMD = path.extname(file) === ".md";
   if (!fileMD) {
@@ -30,7 +27,7 @@ function readMDFile(file) {
   });
 }
 
-// // função que passa o caminho do diretório ou arquivo e ela irá ler e processar os arquivos de acordo com a sua estrutura.
+// função que passa o caminho do diretório ou arquivo e ela irá ler e processar os arquivos de acordo com a sua estrutura.
 function readDirFile(pathFile) {
   return fs.promises.stat(pathFile).then((statsObj) => {
     if (statsObj.isDirectory()) {
@@ -46,7 +43,8 @@ function readDirFile(pathFile) {
     }
   });
 }
-
+ 
+// função para extrair os links do arquivo .md
 function extractLinksFromMarkdown(markdownContent, pathFile) {
   const file = markdownContent.data;
   const regexLink = /\[([^\]]+)\]\(([^\)]+)\)/g;
@@ -61,8 +59,9 @@ function extractLinksFromMarkdown(markdownContent, pathFile) {
   return links;
 }
 
+//função para validar os links 
 function validateFunction(links) {
-  const promises = links.map(function (element) {
+  const promises = links.map((element) => {
     return fetch(element.href)
       .then(function (response) {
         return {
