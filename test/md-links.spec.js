@@ -63,7 +63,7 @@ describe("Testes das função readMDFilesInDirectory,readMDFile, readDirFile", (
   });
 });
 
-describe("Função extractLinksFromMarkdown", () => {
+describe("Teste da função extractLinksFromMarkdown", () => {
   test("Deve extrair os links do conteúdo do arquivo Markdown", () => {
     const markdownContent = {
       data: `Este é um arquivo Markdown com alguns links:
@@ -94,7 +94,7 @@ describe("Função extractLinksFromMarkdown", () => {
     expect(result).toEqual([]);
   });
 
-  describe("validateFunction", () => {
+  describe("Teste da função validateFunction", () => {
     test("Deve validar corretamente os links", () => {
       const links = [
         {
@@ -114,8 +114,7 @@ describe("Função extractLinksFromMarkdown", () => {
         },
       ];
 
-      // Simulando as requisições HTTP usando a biblioteca node-fetch
-      // Neste exemplo, consideraremos todos os links como válidos (status 200)
+      // Simulando as requisições HTTP usando a biblioteca node-fetch      
       const fetchMock = jest.fn().mockResolvedValue({ status: 200, ok: true });
 
       // Substituindo a função fetch pela implementação de mock
@@ -156,7 +155,7 @@ describe("Função extractLinksFromMarkdown", () => {
 
     
     test("Deve lidar corretamente com links inválidos", () => {
-      // Links para validar (usaremos links fictícios para os fins do teste)
+      // Links para validar 
       const links = [
         {
           text: "Sitio oficial de npm (em inglês)",

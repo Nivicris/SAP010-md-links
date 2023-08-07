@@ -1,9 +1,23 @@
 {
   "name": "md-links",
-  "version": "0.1.0",
+  "author": "Nívia Miranda <niviacristinamiranda@gmail.com>",
+  "description": "Ler e analisar arquivos no formato Markdown",
+  "version": "0.1.0",  
   "bin": {
     "md-links": "./src/cli.js"
   },
+
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Nivicris/SAP010-md-links.git"
+  },
+
+  "keywords": [
+    "node",
+    "markdown",
+    "CLI",
+    "API"
+  ],
   "engines": {
     "node": ">=16.x"
   },
@@ -13,12 +27,13 @@
     "commit": "c17498042fc79734cec390e6314cbe810e95bf4c"
   },
   "scripts": {
-    "test": "jest --coverage",
-    "start": "nodemon"
+    "test": "jest --coverage"    
   },
+
   "devDependencies": {
     "jest": "^29.6.1"
   },
+
   "dependencies": {
     "chalk": "^4.1.2"
   }
