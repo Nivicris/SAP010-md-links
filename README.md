@@ -59,7 +59,7 @@ md-links <path-to-file>
 ![mdLinks](<image/$ md-links test.md.jpg>)
 
 ```sh
-md-links <path-to-file> --validate
+md-links <path-to-file> --validate 
 ```
 `Se passamos a opção --validate, o módulo deve fazer uma requisição HTTP para verificar se o link funciona ou não. Se o link resultar em um redirecionamento a uma URL que responde ok, então consideraremos o link como ok.`
 
