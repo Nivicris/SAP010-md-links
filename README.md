@@ -18,79 +18,85 @@
 
 ## Índice
 
-* [1. Prefácio](#1-prefácio)
-* [2. Resumo do projeto](#2-resumo-do-projeto)
-* [3. Objetivos de aprendizagem](#3-objetivos-de-aprendizagem)
-* [4. Considerações gerais](#4-considerações-gerais)
-* [5. Critérios de aceitação mínimos do projeto](#5-criterios-de-aceitação-mínimos-do-projeto)
-* [6. Entregáveis](#6-entregáveis)
-* [7. Hacker edition](#7-hacker-edition)
-* [8. Guias, dicas e leituras complementares](#8-guias-dicas-e-leituras-complementares)
-* [9. Checklist](#9-checklist)
-* [10. Dividindo o problema - babies steps](#10-dividindo-o-problema)
+* [1. Resumo do projeto](#1-resumo-do-projeto)
+* [2. Considerações gerais](#2-considerações-gerais)
+* [3. Fluxograma](#3-fluxograma)
+* [4. Testes](#4-Testes)
+* [5. Github Projects](#5-github-projects)
 
 ***
 
-## 1. Prefácio
+## 1. Resumo do projeto
+
+Markdown é uma linguagem de marcação muito popular entre os programadores. É usada em muitas plataformas que manipulam texto (GitHub, fórum, blogs e etc) e é muito comum encontrar arquivos com este formato em qualquer repositório (começando pelo tradicional README.md).
+
+Os arquivos Markdown normalmente contém links que podem estar quebrados, ou que já não são válidos, prejudicando muito o valor da informação que está ali.
+
+Considerando esta informação, desenvolvi uma ferramenta de linha de comando (CLI) juntamente com uma biblioteca em Javascript que permite a leitura de arquivos Markdown presentes na máquina do usuário e verifica a existência de links nesses arquivos. Além disso, é possível realizar a validação dos links e obter suas estatísticas relevantes. Essa biblioteca é disponibilizada como um executável que pode ser invocado via linha de comando ou ser importado usando o "require" para ser utilizado em qualquer outro código.
+
+## 2. Considerações gerais
+
+### 1) Instalação 
+
+O módulo poder ser **instalado** com o seguinte comando:
+
+  ```sh
+ $ npm install md-links/Nivicris/SAP010-md-links
+  ```
+`Após a instalação bem-sucedida, verifique se você possui um arquivo com a extensão .md contendo links dentro dele.`
+
+### 2) CLI (Interface de Linha de Comando)
+
+A aplicação pode ser acionada de forma executável por meio do terminal da seguinte maneira:
+
+```sh
+md-links <path-to-file> 
+```
+
+`Retorna o arquivo Markdown (a partir da rota que recebeu como argumento), analisa o arquivo e imprimir os links que vão sendo encontrados, junto com a rota do arquivo onde aparece e o texto encontrado dentro do link.`
 
 
-## 2. Resumo do projeto
+![mdLinks](<image/$ md-links test.md.jpg>)
 
+```sh
+md-links <path-to-file> --validate
+```
+`Se passamos a opção --validate, o módulo deve fazer uma requisição HTTP para verificar se o link funciona ou não. Se o link resultar em um redirecionamento a uma URL que responde ok, então consideraremos o link como ok.`
 
-## 3. Objetivos de aprendizagem
+![Validate](<image/md-links --validate.jpg>)
 
+```sh
+md-links <path-to-file> --stats
+```
+`Se passamos a opção --stats o output (saída) será um texto com estatísticas básicas sobre os links.`
 
+![Stats](<image/md-links --stats.jpg>)
 
+```sh
+md-links <path-to-file> --stats --validate
+```
+`Também podemos combinar --stats e --validate para obter estatísticas que necessitem dos resultados da validação.`
 
-## 4. Considerações gerais
+![Validate e Stats](<image/md-links --validate --stats.jpg>)
 
+## 3. Fluxograma 
 
-## 5. Critérios de aceitação mínimos do projeto
+A programação do projeto foi elaborada utilizando o fluxograma apresentado a seguir:
 
+![Fluxograma](image/fluxograma.jpg)
 
-## 6. Entregáveis
+## 4. Testes
 
+A execução dos testes foi feito através do Jest
 
-## 7. Hacker edition
+![Test](image/test.jpg)
 
+## 5. Github Projects
 
+Utilizei o Github Projects para organizar o backlog das implementações da biblioteca por meio de issues e milestones. 
 
-***
+![Github](<image/github projects.jpg>)
 
-## 8. Guias, dicas e leituras complementares
-
-
-## 9. Checklist
-
-### General
-
-* [ ] Poder instalar via `npm install --global <github-user>/md-links`
-
-### `README.md`
-
-* [ ] Um board com o backlog das implementações da sua biblioteca
-* [ ] Documentação técnica da sua biblioteca
-* [ ] Guia de uso e instalação da biblioteca
-
-### API `mdLinks(path, opts)`
-
-* [ ] O módulo exporta uma função com a interface (API) esperada
-* [ ] Implementa suporte para arquivo individual
-* [ ] Implementa suporte para diretórios
-* [ ] Implementa `options.validate`
-
-### CLI
-
-* [ ] Possuir o executável `md-links` no path (configurado no `package.json`)
-* [ ] Executar sem erros e ter o resultado esperado
-* [ ] Implementar `--validate`
-* [ ] Implementar `--stats`
-
-### Testes
-
-* [ ] Os testes unitários devem cobrir no mínimo 70% dos statements, functions,
-  lines e branches.
-* [ ] Rodar os testes e linter (`npm test`).
 
 ***
 
