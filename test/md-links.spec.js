@@ -11,7 +11,7 @@ const {
 
 describe("Testes das função readMDFilesInDirectory,readMDFile, readDirFile", () => {
   test("Deve ler o conteúdo de um diretório", () => {
-    const testDir = path.join(__dirname, "..", "src");
+    const testDir = path.join(__dirname, "..", "src"); //criar um caminho de arquivo ou diretório
     return readMDFilesInDirectory(testDir).then((result) => {
       // Verifique se o resultado é um array
       expect(Array.isArray(result)).toBe(true);
@@ -266,6 +266,68 @@ test("deve retornar os links sem validação", () => {
         href: "http://google.com/",
         text: "google",
         file: "./src/test.md"        
+      },
+    ]);
+  });
+});
+test("deve retornar os links sem validação", () => {
+  const arquivo = path.join(__dirname, "..", "src", "test.md");
+  return mdLinks("./src", { validate: false }).then((result) => {
+    expect(result).toEqual([
+      {
+        href: "https://jestjs.io/docs/pt-BR/getting-started",
+        text: "Introdução ao Jest - Documentação oficial",
+        file: arquivo        
+      },
+      {
+        href: "https://www.npmjs.@@@@com/",
+        text: "Sitio oficial de npm (em inglês)",
+        file: arquivo        
+      },
+      {
+        href: "https://developer.mozilla.org/pt-BR/docs/Web/HTTP/Status",
+        text: "Códigos de status de respostas HTTP - MDN",
+        file: arquivo        
+      },
+      {
+        href: "http://google.com/",
+        text: "google",
+        file: arquivo        
+      },
+    ]);
+  });
+});
+test("deve retornar os links sem validação", () => {
+  const arquivo = path.join(__dirname, "..", "src", "test.md");
+  return mdLinks("./src", { validate: true }).then((result) => {
+    expect(result).toEqual([
+      {
+        href: "https://jestjs.io/docs/pt-BR/getting-started",
+        text: "Introdução ao Jest - Documentação oficial",
+        file: arquivo,
+        status: 200,
+        ok: "ok",      
+      },
+      {
+        href: "https://www.npmjs.@@@@com/",
+        text: "Sitio oficial de npm (em inglês)",
+        file: arquivo,
+        status: 404,
+        ok: "fail",     
+      },
+      {
+        href: "https://developer.mozilla.org/pt-BR/docs/Web/HTTP/Status",
+        text: "Códigos de status de respostas HTTP - MDN",
+        file: arquivo, 
+        status: 200,   
+        ok: "ok",
+      },
+      {
+        href: "http://google.com/",
+        text: "google",
+        file: arquivo,   
+        status: 200,
+        ok: "ok",    
       },
     ]);
   });
