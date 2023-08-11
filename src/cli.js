@@ -2,7 +2,7 @@
 const { mdLinks } = require("./mdlink");
 const chalk = require("chalk");
 
-const args = process.argv.slice(2);
+const args = process.argv.slice(2); //o programa pega todos os argumentos passados na linha de comando exceto os dois primeiros
 const filePath = args[0];
 const options = {
   validate: args.includes("--validate"),
@@ -10,7 +10,7 @@ const options = {
 };
 
 function linkStatistics(links) {
-  return links.reduce(
+  return links.reduce( //reduce é usado para percorrer a matriz de links e acumular estatísticas.
     (acc, link) => {
       acc.total++;
       acc.unique.add(link.href);
@@ -19,7 +19,7 @@ function linkStatistics(links) {
       }
       return acc;
     },
-    { total: 0, unique: new Set(), broken: 0 }
+    { total: 0, unique: new Set(), broken: 0 } //retorna um objeto contendo essas estatísticas após a iteração completa.
   );
 }
 

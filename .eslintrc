@@ -11,7 +11,7 @@
   "globals": {
     "path": "readonly", // não seja reatribuída ou modificada 
     "fs": "readonly",
-    "chalc": "readonly"
+    "chalk": "readonly"
   },
   "extends": [
     "airbnb-base"
