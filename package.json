@@ -8,6 +8,7 @@
   },
 
   "repository": {
+    "license": "MIT", 
     "type": "git",
     "url": "https://github.com/Nivicris/SAP010-md-links.git"
   },
